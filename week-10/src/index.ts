@@ -4,7 +4,7 @@ const client = new Client({
     connectionString: "postgres://chaiaurcode:chaiaurcode@localhost:5432/chaiDB"
 });
 
-async function main() {
+async function createTable() {
     await client.connect();
     const res = await client.query(`
         CREATE TABLE users (
@@ -19,4 +19,12 @@ async function main() {
     await client.end();
 }
 
-main();
+async function addDataToTable() {
+    await client.connect();
+    const res = await client.query(`
+    INSERT INTO users (username, email, password)
+    VALUES ('sumanjeet0012', 'sumanjeet0012@gmail.com', '12345678');
+    `)
+}
+
+addDataToTable();

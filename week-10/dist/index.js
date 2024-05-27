@@ -13,7 +13,7 @@ const pg_1 = require("pg");
 const client = new pg_1.Client({
     connectionString: "postgres://chaiaurcode:chaiaurcode@localhost:5432/chaiDB"
 });
-function main() {
+function createTable() {
     return __awaiter(this, void 0, void 0, function* () {
         yield client.connect();
         const res = yield client.query(`
@@ -29,4 +29,13 @@ function main() {
         yield client.end();
     });
 }
-main();
+function addDataToTable() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.connect();
+        const res = yield client.query(`
+    INSERT INTO users (username, email, password)
+    VALUES ('sumanjeet0012', 'sumanjeet0012@gmail.com', '12345678');
+    `);
+    });
+}
+addDataToTable();
