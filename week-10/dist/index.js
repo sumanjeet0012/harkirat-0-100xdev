@@ -47,4 +47,47 @@ function addDataToTable() {
         }
     });
 }
-addDataToTable();
+function getUser() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client.connect();
+            const res = yield client.query("SELECT * FROM users WHERE username = $1", ["sumanjeet0012"]);
+            console.log(res.rows);
+            yield client.end();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    });
+}
+// It is in relationship with the users table using the idof users table as foreign key.
+function createAddressTable() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.connect();
+        const res = yield client.query(`
+    CREATE TABLE addresses (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        city VARCHAR(100) NOT NULL,
+        country VARCHAR(100) NOT NULL,
+        street VARCHAR(255) NOT NULL,
+        pincode VARCHAR(20),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    `);
+        console.log(res);
+        yield client.end();
+    });
+}
+function addAddress() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.connect();
+        const res = yield client.query(`
+    INSERT INTO addresses (user_id, city, country, street, pincode) VALUES (1, 'Bokaro', 'India', 'Sector 6D', '827006');
+    `);
+        console.log(res);
+        yield client.end();
+    });
+}
+addAddress();
