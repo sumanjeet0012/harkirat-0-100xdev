@@ -90,4 +90,18 @@ function addAddress() {
         yield client.end();
     });
 }
-addAddress();
+function getAddress() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client.connect();
+            const res = yield client.query("SELECT * FROM addresses WHERE user_id = 1");
+            console.log("normal res", res);
+            console.log("res.rows", res.rows);
+            yield client.end();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    });
+}
+getAddress();

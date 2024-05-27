@@ -75,6 +75,16 @@ async function addAddress() {
     await client.end();
 }
 
+async function getAddress() {
+    try {
+        await client.connect();
+        const res = await client.query("SELECT * FROM addresses WHERE user_id = 1");
+        console.log("normal res",res);
+        console.log("res.rows",res.rows);
+        await client.end();
+    } catch (err) {
+        console.error(err);
+    }
+}
 
-
-addAddress();
+getAddress();
