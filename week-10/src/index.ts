@@ -20,11 +20,18 @@ async function createTable() {
 }
 
 async function addDataToTable() {
-    await client.connect();
-    const res = await client.query(`
-    INSERT INTO users (username, email, password)
-    VALUES ('sumanjeet0012', 'sumanjeet0012@gmail.com', '12345678');
-    `)
+    try {
+        await client.connect(); // Ensure client connection is established
+        // Use parameterized query to prevent SQL injection
+        const insertQuery = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
+        const values = ["suraj0012", "suraj0012@gmail", "12345678"];
+        const res = await client.query(insertQuery, values);
+        console.log('Insertion success:', res); // Output insertion result
+      } catch (err) {
+        console.error('Error during the insertion:', err);
+      } finally {
+        await client.end(); // Close the client connection
+      }
 }
 
 addDataToTable();
