@@ -87,4 +87,20 @@ async function getAddress() {
     }
 }
 
-getAddress();
+async function getUserAndAddress() {
+    try {
+        await client.connect();
+        const res = await client.query(`
+            SELECT users.id, users.username, users.email, addresses.city, addresses.country, addresses.street, addresses.pincode
+            FROM users
+            JOIN addresses ON users.id = addresses.user_id
+            WHERE users.id = '1';
+        `);
+        console.log(res.rows);
+        await client.end();
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+getUserAndAddress();

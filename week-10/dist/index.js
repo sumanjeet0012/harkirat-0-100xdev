@@ -104,4 +104,22 @@ function getAddress() {
         }
     });
 }
-getAddress();
+function getUserAndAddress() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client.connect();
+            const res = yield client.query(`
+            SELECT users.id, users.username, users.email, addresses.city, addresses.country, addresses.street, addresses.pincode
+            FROM users
+            JOIN addresses ON users.id = addresses.user_id
+            WHERE users.id = '1';
+        `);
+            console.log(res.rows);
+            yield client.end();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    });
+}
+getUserAndAddress();
