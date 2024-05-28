@@ -12,3 +12,19 @@ datasource db {
   provider = "postgresql"
   url      = "postgres://chaiaurcode:chaiaurcode@localhost:5432/chaiDB"
 }
+
+model Users {
+  id Int @id @default(autoincrement()) 
+  email String @unique
+  firstname String
+  lastname String
+  password String
+}
+
+model Todo {
+  id Int @id @default(autoincrement()) 
+  title String
+  done Boolean @default(false)
+  description String
+  userId Int
+}
