@@ -25,4 +25,18 @@ function main() {
         console.log(user);
     });
 }
-main();
+function updateData() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const user = yield prisma.user.update({
+            where: {
+                id: 2,
+            },
+            data: {
+                password: "123456789",
+                lastName: "NA",
+            },
+        });
+        console.log(user);
+    });
+}
+updateData();

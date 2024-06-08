@@ -15,4 +15,17 @@ async function main() {
     console.log(user);
 }
 
-main();
+async function updateData() {
+    const user = await prisma.user.update({
+        where: {
+            id: 2,
+        },
+        data: {
+            password: "123456789",
+            lastName: "NA",
+        },
+    });
+    console.log(user);
+}
+
+updateData();
