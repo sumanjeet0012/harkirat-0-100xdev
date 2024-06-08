@@ -39,4 +39,14 @@ function updateData() {
         console.log(user);
     });
 }
-updateData();
+function getUser(username) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const user = yield prisma.user.findFirst({
+            where: {
+                username: username
+            }
+        });
+        console.log(user);
+    });
+}
+getUser("sumanjeet");

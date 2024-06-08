@@ -28,4 +28,13 @@ async function updateData() {
     console.log(user);
 }
 
-updateData();
+async function getUser(username: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+          username: username
+      }
+    })
+    console.log(user);
+}
+
+getUser("sumanjeet");
