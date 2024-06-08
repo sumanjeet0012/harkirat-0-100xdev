@@ -47,4 +47,18 @@ async function addTodo() {
     })
 }
 
-addTodo();
+async function getTodoAndUser() {
+    const todo = await prisma.todo.findMany({
+        where: {
+            userId: 1
+        },
+        select: {
+            title: true,
+            description: true,
+            user: true
+        }
+    })
+    console.log(todo);
+}
+
+getTodoAndUser();

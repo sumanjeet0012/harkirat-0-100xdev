@@ -53,11 +53,26 @@ function addTodo() {
     return __awaiter(this, void 0, void 0, function* () {
         const todo = yield prisma.todo.create({
             data: {
-                title: "Learn Prisma 2nd time",
-                description: "Learn Prisma and start to use in your project 2",
+                title: "Learn Prisma",
+                description: "Learn Prisma and start to use in your project",
                 userId: 1,
             }
         });
     });
 }
-addTodo();
+function getTodoAndUser() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const todo = yield prisma.todo.findMany({
+            where: {
+                userId: 1
+            },
+            select: {
+                title: true,
+                description: true,
+                user: true
+            }
+        });
+        console.log(todo);
+    });
+}
+getTodoAndUser();
