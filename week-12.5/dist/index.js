@@ -49,4 +49,15 @@ function getUser(username) {
         console.log(user);
     });
 }
-getUser("sumanjeet");
+function addTodo() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const todo = yield prisma.todo.create({
+            data: {
+                title: "Learn Prisma 2nd time",
+                description: "Learn Prisma and start to use in your project 2",
+                userId: 1,
+            }
+        });
+    });
+}
+addTodo();

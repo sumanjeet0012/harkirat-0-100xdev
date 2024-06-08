@@ -37,4 +37,14 @@ async function getUser(username: string) {
     console.log(user);
 }
 
-getUser("sumanjeet");
+async function addTodo() {
+    const todo = await prisma.todo.create({
+        data: {
+            title: "Learn Prisma",
+            description: "Learn Prisma and start to use in your project",
+            userId: 1,
+        }
+    })
+}
+
+addTodo();
