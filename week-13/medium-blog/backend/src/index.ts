@@ -8,6 +8,10 @@ const app = new Hono<{
 	}
 }>();
 
+/*
+  `//@ts-ignore` it is used to ignore type check on next line.
+*/
+
 app.get("/", (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
