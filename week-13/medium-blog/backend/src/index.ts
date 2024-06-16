@@ -1,13 +1,13 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { jwt, sign } from 'hono/jwt'
+import { jwt, sign } from "hono/jwt";
 
 const app = new Hono<{
-	Bindings: {
-		DATABASE_URL: string,
-    JWT_SECRET: string
-	}
+  Bindings: {
+    DATABASE_URL: string;
+    JWT_SECRET: string;
+  };
 }>();
 
 /*
@@ -34,21 +34,44 @@ app.post("/api/v1/signup", async (c) => {
         email: body.email,
         name: body.name,
         password: body.password,
-      }
-    })
-    const token = await sign( { id: user.id },c.env.JWT_SECRET );
+      },
+    });
+    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
     return c.json({
-      jwt: token
+      jwt: token,
     });
   } catch (error) {
     console.log(error);
     return c.status(403);
   }
-  
 });
 
-app.post("/api/v1/user/signin", (c) => {
-  return c.text("This is a signin route");
+app.post("/api/v1/signin", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  const body = await c.req.json();
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: body.email,
+        password: body.password,
+      },
+    });
+
+    if (!user) {
+      return c.status(403);
+    }
+    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
+
+    return c.json({ jwt: token });
+  } catch (error) {
+    console.log(error);
+    c.status(403);
+    return c.json({ error: "Invalid credentials" });
+  }
 });
 
 app.post("/api/v1/blog", (c) => {
