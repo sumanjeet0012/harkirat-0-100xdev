@@ -19,8 +19,28 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
-app.post("/api/v1/user/signup", (c) => {
-  return c.text("This is a signup route");
+app.post("/api/v1/signup", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  const body = await c.req.json();
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        email: body.email,
+        name: body.name,
+        password: body.password,
+      }
+    })
+  } catch (error) {
+    console.log(error);
+    return c.status(403);
+  }
+
+
+  return c.text(`User created with user id ${user}`);
 });
 
 app.post("/api/v1/user/signin", (c) => {
