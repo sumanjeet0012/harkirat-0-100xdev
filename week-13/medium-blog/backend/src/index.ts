@@ -44,7 +44,7 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
-app.post("/api/v1/signup", async (c) => {
+app.post("/api/v1/user/signup", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
@@ -69,7 +69,7 @@ app.post("/api/v1/signup", async (c) => {
   }
 });
 
-app.post("/api/v1/signin", async (c) => {
+app.post("/api/v1/user/signin", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
