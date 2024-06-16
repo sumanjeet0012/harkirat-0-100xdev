@@ -34,13 +34,12 @@ app.post("/api/v1/signup", async (c) => {
         password: body.password,
       }
     })
+    return c.text(`User created with user id ${user}`);
   } catch (error) {
     console.log(error);
     return c.status(403);
   }
-
-
-  return c.text(`User created with user id ${user}`);
+  
 });
 
 app.post("/api/v1/user/signin", (c) => {
