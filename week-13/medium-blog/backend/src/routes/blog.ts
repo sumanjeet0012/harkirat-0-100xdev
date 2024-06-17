@@ -7,33 +7,32 @@ export const blogRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
-  },
+  };
   Variables: {
-    userId: string
+    userId: string;
   };
 }>();
 
 blogRouter.use("/*", async (c, next) => {
-    const authHeader = c.req.header("Authorization");
-    const token = authHeader?.split(" ")[1];
-    if (!token) {
-      return c.json({ error: "Unauthorized" });
+  const authHeader = c.req.header("Authorization");
+  const token = authHeader?.split(" ")[1];
+  if (!token) {
+    return c.json({ error: "Unauthorized" });
+  }
+  try {
+    const user = await verify(token, c.env.JWT_SECRET);
+    if (user) {
+      c.set("userId", String(user.id));
+      await next();
+    } else {
+      c.status(403);
+      return c.json({ error: "You are not logged in" });
     }
-    try {
-      const user = await verify(token, c.env.JWT_SECRET);
-      if(user){
-        c.set("userId", String(user.id));
-        await next();
-      } else {
-        c.status(403);
-        return c.json({"error": "You are not logged in"});
-      }
-    } catch (error) {
-      c.json({"error": "JWT verification failed"});
-      c.text("JWT verification failed");
-      return c.status(403);
-    }
-})
+  } catch (error) {
+    c.status(411);
+    return c.json({ error: "JWT verification failed" });
+  }
+});
 
 blogRouter.post("/", async (c) => {
   const body = await c.req.json();
@@ -77,23 +76,22 @@ blogRouter.put("/", async (c) => {
 });
 
 blogRouter.get("/bulk", async (c) => {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
-  
-    try {
-      const blog = await prisma.blog.findMany();
-        return c.json({
-          blog,
-        });
-    } catch (error) {
-      console.log(error);
-      c.status(411);
-      return c.json({
-          message: "Error while fetching data from database"
-      })
-  
-    }
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const blog = await prisma.blog.findMany();
+    return c.json({
+      blog,
+    });
+  } catch (error) {
+    console.log(error);
+    c.status(411);
+    return c.json({
+      message: "Error while fetching data from database",
+    });
+  }
 });
 
 blogRouter.get("/:id", async (c) => {
@@ -104,20 +102,19 @@ blogRouter.get("/:id", async (c) => {
 
   try {
     const blog = await prisma.blog.findFirst({
-        where: {
-          id: parseInt(param.id),
-        },
-      });
-    
-      return c.json({
-        blog,
-      });
+      where: {
+        id: parseInt(param.id),
+      },
+    });
+
+    return c.json({
+      blog,
+    });
   } catch (error) {
     console.log(error);
     c.status(411);
     return c.json({
-        message: "Error while fetching data from database"
-    })
-    
+      message: "Error while fetching data from database",
+    });
   }
 });
