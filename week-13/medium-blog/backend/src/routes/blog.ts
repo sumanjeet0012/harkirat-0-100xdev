@@ -7,8 +7,33 @@ export const blogRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
+  },
+  Variables: {
+    userId: string
   };
 }>();
+
+blogRouter.use("/*", async (c, next) => {
+    const authHeader = c.req.header("Authorization");
+    const token = authHeader?.split(" ")[1];
+    if (!token) {
+      return c.json({ error: "Unauthorized" });
+    }
+    try {
+      const user = await verify(token, c.env.JWT_SECRET);
+      if(user){
+        c.set("userId", String(user.id));
+        await next();
+      } else {
+        c.status(403);
+        return c.json({"error": "You are not logged in"});
+      }
+    } catch (error) {
+      c.json({"error": "JWT verification failed"});
+      c.text("JWT verification failed");
+      return c.status(403);
+    }
+})
 
 blogRouter.post("/", async (c) => {
   const body = await c.req.json();
@@ -16,11 +41,12 @@ blogRouter.post("/", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
+  const userId = c.get("userId");
   const blog = await prisma.blog.create({
     data: {
       title: body.title,
       content: body.content,
-      authorId: 1,
+      authorId: Number(userId),
     },
   });
 
