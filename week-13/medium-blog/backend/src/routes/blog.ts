@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { jwt, sign, verify } from "hono/jwt";
+import { verify } from "hono/jwt";
 
 export const blogRouter = new Hono<{
   Bindings: {
@@ -63,7 +63,7 @@ blogRouter.put("/", async (c) => {
 
   const blog = await prisma.blog.update({
     where: {
-      id: body.id,
+      id: parseInt(body.id),
     },
     data: {
       title: body.title,
@@ -72,34 +72,8 @@ blogRouter.put("/", async (c) => {
   });
 
   return c.json({
-    id: blog.id,
+    blog,
   });
-});
-
-blogRouter.get("/:id", async (c) => {
-  const body = await c.req.json();
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  try {
-    const blog = await prisma.blog.findFirst({
-        where: {
-          id: body.id,
-        },
-      });
-    
-      return c.json({
-        blog,
-      });
-  } catch (error) {
-    console.log(error);
-    c.status(411);
-    return c.json({
-        message: "Error while fetching data from database"
-    })
-
-  }
 });
 
 blogRouter.get("/bulk", async (c) => {
@@ -120,4 +94,30 @@ blogRouter.get("/bulk", async (c) => {
       })
   
     }
+});
+
+blogRouter.get("/:id", async (c) => {
+  const param = c.req.param();
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const blog = await prisma.blog.findFirst({
+        where: {
+          id: parseInt(param.id),
+        },
+      });
+    
+      return c.json({
+        blog,
+      });
+  } catch (error) {
+    console.log(error);
+    c.status(411);
+    return c.json({
+        message: "Error while fetching data from database"
+    })
+    
+  }
 });
