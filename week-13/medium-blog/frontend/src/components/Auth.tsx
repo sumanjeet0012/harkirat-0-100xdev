@@ -19,7 +19,7 @@ const Auth = ({ type }: { type: "signin" | "signup" }) => {
       , postInputs);
       console.log(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs)
       const jwt = responce.data;
-      localStorage.setItem("token", jwt);
+      localStorage.setItem("token", jwt.jwt);
       navigate("/blogs");
     } catch (error) {
       console.log(error);
