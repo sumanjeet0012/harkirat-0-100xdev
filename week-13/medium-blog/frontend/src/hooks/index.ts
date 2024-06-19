@@ -39,7 +39,6 @@ export const useBlogs = () => {
                 Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTB9.2EiH7Zxs0v4r0LLFFBtb1FL4Ag6fnmy1BNM8yAA_e2o`
             }
         }).then((res) => {
-            console.log(res.data.blog)
             setBlogs(res.data.blog);
             setLoading(false);
         })
