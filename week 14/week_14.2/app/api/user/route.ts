@@ -4,3 +4,4 @@ export function GET() {
         email: 'sumanjeet@gmailcom'
     });
 }
+
