@@ -8,9 +8,10 @@ export function GET () {
     })
 }
 
-export function POST (req : NextRequest, {params} : any) {
+export function POST (req : NextRequest, args : any) {
+    console.log(args);
     return NextResponse.json({
         success: true,
-        params
+        args
     })
 }
