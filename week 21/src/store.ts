@@ -8,10 +8,17 @@ interface Game {
 
 export class GameManager {
     games: Game[] = [];
+    private static instance: GameManager;
     constructor() {
-        this.games = [];   
+        this.games = [];
     }
 
+    static getInstance() {
+        if (GameManager.instance){
+            return GameManager.instance;
+        }
+        return GameManager.instance = new GameManager();
+    }
     addMove(gameId: string, move: string) {
         console.log(`Adding move ${move} to game ${gameId}`);
         const game = this.games.find(game => game.id === gameId);
@@ -33,5 +40,3 @@ export class GameManager {
         console.log(this.games);
     }
 }
-
-export const gameManager = new GameManager();
